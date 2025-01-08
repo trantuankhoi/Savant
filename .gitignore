@@ -64,3 +64,5 @@ data
 
 # logs (perf measurement)
 logs
+
+.env
