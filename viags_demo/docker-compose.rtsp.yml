@@ -1,5 +1,22 @@
 services:
 
+  client:
+    image: ghcr.io/insight-platform/savant-deepstream:latest
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - ./assets/test_data:/test_data
+      - ./src/client:/opt/savant/src/client
+      - ./src/output:/opt/savant/src/output
+    command: >
+      bash -c "pip install savant_rs &&
+              python /opt/savant/src/client/run.py"
+    environment:
+      - MODULE_HOSTNAME=module
+    links:
+      - jaeger
+    networks:
+      - network
+
   rtsp-cam1:
     image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
     restart: unless-stopped
@@ -13,6 +30,8 @@ services:
     depends_on:
       module:
         condition: service_healthy
+    networks:
+      - network
 
   # rtsp-cam2:
   #   image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
@@ -48,16 +67,22 @@ services:
       dockerfile: Dockerfile.x86
     volumes:
       - zmq_sockets:/tmp/zmq-sockets
-      - ../../cache:/cache
-      - ..:/opt/savant/samples
-    command: samples/viags_demo/module.yml
+      - ./models_cache:/cache
+      - ./downloads_cache:/downloads_cache
+      - ../samples:/opt/savant/samples
+      - ./:/opt/savant/viags_demo
+    command: viags_demo/module.yml
     environment:
-      - MODEL_PATH=/cache/models/viags_demo
-      - DOWNLOAD_PATH=/cache/downloads/viags_demo
+      - HEALTHCHECK_PORT=8888
+      - MODEL_PATH=/cache
+      - DOWNLOAD_PATH=/downloads_cache
       - ZMQ_SRC_ENDPOINT=sub+bind:ipc:///tmp/zmq-sockets/input-video.ipc
       - ZMQ_SINK_ENDPOINT=pub+bind:ipc:///tmp/zmq-sockets/output-video.ipc
       - METRICS_FRAME_PERIOD=1000
       - LOG_LEVEL=DEBUG
+    ports:
+      - "8888:8888"
+      - "8125:8125"
     deploy:
       resources:
         reservations:
@@ -65,6 +90,10 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [ gpu ]
+    links:
+      - jaeger
+    networks:
+      - network
 
   always-on-sink:
     image: ghcr.io/insight-platform/savant-adapters-deepstream:latest
@@ -76,7 +105,7 @@ services:
       - "8889:8889"  # WebRTC
     volumes:
       - zmq_sockets:/tmp/zmq-sockets
-      - ../assets/stub_imgs:/stub_imgs
+      - ./assets/stub_imgs:/stub_imgs
     environment:
       - ZMQ_ENDPOINT=sub+connect:ipc:///tmp/zmq-sockets/output-video.ipc
       - SOURCE_IDS=cam1
@@ -91,8 +120,26 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [ gpu ]
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+    ports:
+      - "16686:16686"    # query
+      - "4317:4317"      # OTLP gRPC
+      - "4318:4318"      # OTLP HTTP
+      - "14250:14250"
+      - "14268:14268"
+      - "14269:14269"
+      - "9411:9411"
+    networks:
+      - network
+
   graphite:
     image: graphiteapp/graphite-statsd
+    networks:
+      - network
 
   grafana:
     image: grafana/grafana-oss
@@ -108,4 +155,9 @@ services:
 
 volumes:
   zmq_sockets:
+
+networks:
+  network:
+    attachable: true
+
 

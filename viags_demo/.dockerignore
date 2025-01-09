@@ -1,0 +1,12 @@
+**/__pycache__
+.idea/
+.vscode/
+.gitignore
+.git
+.github/
+docker/
+.dockerignore
+Makefile
+assets/
+downloads_cache/
+models_cache/
