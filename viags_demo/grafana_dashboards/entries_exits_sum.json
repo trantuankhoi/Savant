@@ -115,7 +115,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.savant.module.viags_demo.cam1.person"
+          "target": "stats.gauges.savant.module.viags_demo.video1.head"
         }
       ],
       "title": "Entries and exits",

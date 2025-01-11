@@ -1,5 +1,5 @@
 # module name, required
-name: ${oc.env:MODULE_NAME, 'template'}
+name: ${oc.env:MODULE_NAME, 'demo'}
 
 # base module parameters
 parameters:
@@ -8,16 +8,24 @@ parameters:
   # Allows sending shutdown message to the module with the auth-key (see below)
   shutdown_auth: "shutdown"
   # enable OpenTelemetry
-  telemetry:
-    tracing:
-      sampling_period: 100
-      root_span_name: pipeline
-      provider: jaeger
-      provider_params:
-        service_name: demo-pipeline
-        endpoint: jaeger:6831
+  # telemetry:
+  #   tracing:
+  #     sampling_period: 100
+  #     root_span_name: pipeline
+  #     provider: jaeger
+  #     provider_params:
+  #       service_name: demo-pipeline
+  #       protocol: grpc
+  #       endpoint: "http://jaeger:4317"
+        # timeout: 5000 # milliseconds
+        # tls:
+        #   certificate: /path/to/ca.crt
+        #   identity:
+        #       certificate: /path/to/client.crt
+        #       key: /path/to/client.key
 
   # pipeline processing frame parameters
+  sidebar_width: 296
   frame:
     width: 1280
     height: 720
@@ -26,13 +34,16 @@ parameters:
     codec: raw-rgba
   # custom drawing on frames function
   draw_func:
-    module: src.module.overlay_draw_spec
+    module: viags_demo.overlay
     class_name: Overlay
-    #kwargs:
-    rendered_objects:
-      peoplenet:
-        person:
-        face:
+    kwargs:
+      config_path: /opt/savant/viags_demo/area_config.yml
+      sidebar_width: ${parameters.sidebar_width}
+      target_obj_label: head
+    # rendered_objects:
+    #   peoplenet:
+    #     person:
+    #     face:
 
 
 # pipeline definition
@@ -43,63 +54,54 @@ pipeline:
     # model type is detector (other available types are: classifier, custom)
     - element: nvinfer@detector
       # Model's name in the pipeline, mandatory
-      name: peoplenet
+      name: head_detection
       # model definition
       model:
-        # format of the provided model file
-        format: etlt
-        # remote storage where the model files can be found
-        # skip if providing model files locally
-        remote:
-          url: s3://savant-data/models/peoplenet/peoplenet_pruned_v2.0.zip
-          checksum_url: s3://savant-data/models/peoplenet/peoplenet_pruned_v2.0.md5
-          parameters:
-            endpoint: https://eu-central-1.linodeobjects.com
-          # or get the model directly from NGC API
-          # peoplenet v2.0
-          # url: "https://api.ngc.nvidia.com/v2/models/nvidia/tao/peoplenet/versions/pruned_v2.0/zip"
-
-        # model file name, without location
-        model_file: resnet34_peoplenet_pruned.etlt  # v2.0 Accuracy: 84.3 Size 20.9 MB
+        format: onnx
+        model_file: head.pt.onnx
+        config_file: config_infer_primary_head_detection.txt
+        batch_size: 3
+        workspace_size: 6144
 
         # configuration of input data and custom preprocessing methods
         input:
           # model input layer name
-          layer_name: input_1
+          layer_name: input
           # model input layer shape
-          shape: [3, 544, 960]
+          shape: [3, 640, 640]
           # pixel scaling/normalization factor
           scale_factor: 0.0039215697906911373
 
         # configuration of model output
         output:
           # model output layer names
-          layer_names: [output_bbox/BiasAdd, output_cov/Sigmoid]
+          layer_names: [output]
+          converter:
+            module: viags_demo.yolov9_converter
+            class_name: YOLOv9Converter
+            kwargs:
+              confidence_threshold: 0.6
+              nms_iou_threshold: 0.45
+              top_k: 10
           # number of detected classes for detector model
-          num_detected_classes: 3
-          # specify which detected objects are included in output
+          num_detected_classes: 1
           objects:
-            # object class id
             - class_id: 0
-              # label assigned to objects of this class id
-              label: person
-              selector:
-                kwargs:
-                  # minimal width of the objects of this class to be included in output
-                  min_width: 32
-                  # minimal height of the objects of this class to be included in output
-                  min_height: 32
-            - class_id: 2
-              label: face
-              selector:
-                kwargs:
-                  # minimal width of the objects of this class to be included in output
-                  min_width: 16
-                  # minimal height of the objects of this class to be included in output
-                  min_height: 16
+              label: head
+
+    # - element: nvtracker
+    #   properties:
+    #     ll-lib-file: /opt/nvidia/deepstream/deepstream/lib/libnvds_nvmultiobjecttracker.so
+    #     ll-config-file: /opt/savant/samples/assets/tracker/config_tracker_NvDCF_perf.yml
+    #     tracker-width: 960  # 640  # must be a multiple of 32
+    #     tracker-height: 544  # 384
+    #     display-tracking-id: 0
 
     # custom pyfunc element
     - element: pyfunc
-      module: src.module.custom_pyfunc
-      class_name: CustomPyFunc
-      #kwargs:
+      module: viags_demo.object_counting
+      class_name: ObjectCounting
+      kwargs:
+        config_path: /opt/savant/viags_demo/area_config.yml
+        target_obj_label: head
+        send_stats: False

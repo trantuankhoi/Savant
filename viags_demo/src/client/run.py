@@ -12,7 +12,7 @@ from savant.client import JaegerLogProvider, JpegSource, SinkBuilder, SourceBuil
 print('Starting Savant client...')
 # Initialize Jaeger tracer to send metrics and logs to Jaeger.
 # Note: the Jaeger tracer also should be configured in the module.
-init_jaeger_tracer('savant-client', 'jaeger:6831')
+# init_jaeger_tracer('savant-client', 'jaeger:6831')
 
 module_hostname = os.environ.get('MODULE_HOSTNAME', 'localhost')
 jaeger_endpoint = 'http://jaeger:16686'
@@ -25,10 +25,10 @@ result_img_path = os.path.join(parent_dir, 'output', 'result_img.jpeg')
 # Build the source
 source = (
     SourceBuilder()
-    .with_log_provider(JaegerLogProvider(jaeger_endpoint))
+    # .with_log_provider(JaegerLogProvider(jaeger_endpoint))
     .with_socket('pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc')
     # Note: healthcheck port should be configured in the module.
-    .with_module_health_check_url(healthcheck_url)
+    # .with_module_health_check_url(healthcheck_url)
     .build()
 )
 
@@ -37,9 +37,9 @@ sink = (
     .with_socket('sub+connect:ipc:///tmp/zmq-sockets/output-video.ipc')
     .with_source_id(source_id)
     .with_idle_timeout(60)
-    .with_log_provider(JaegerLogProvider(jaeger_endpoint))
+    # .with_log_provider(JaegerLogProvider(jaeger_endpoint))
     # Note: healthcheck port should be configured in the module.
-    .with_module_health_check_url(healthcheck_url)
+    # .with_module_health_check_url(healthcheck_url)
     .build()
 )
 

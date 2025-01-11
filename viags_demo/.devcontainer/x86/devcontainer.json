@@ -1,7 +1,7 @@
 {
   "name": "my-savant-module",
   "build": {
-    "dockerfile": "../../docker/Dockerfile.x86",
+    "dockerfile": "../../Dockerfile.x86",
     "context": "../.."
   },
   "customizations": {
@@ -45,6 +45,11 @@
     {
       "source": "${localWorkspaceFolder}/src/output",
       "target": "/opt/savant/src/output",
+      "type": "bind"
+    },
+    {
+      "source": "/home/kedanhcaptraitim/01_Projects/SVL/Savant/samples",
+      "target": "/opt/savant/samples",
       "type": "bind"
     }
   ]

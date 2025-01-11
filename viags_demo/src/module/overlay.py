@@ -37,7 +37,6 @@ class Overlay(NvDsDrawFunc):
         #     border_width=0,
         #     bg_color=(0, 0, 0, 255),
         # )
-
         if frame_meta.source_id not in self.areas:
             return
 
@@ -47,8 +46,9 @@ class Overlay(NvDsDrawFunc):
             if obj_meta.is_primary:
                 primary_meta_object = obj_meta
             elif obj_meta.label == self.target_obj_label:
-                artist.add_bbox(obj_meta.bbox, 3, (255, 255, 255, 255))
+                artist.add_bbox(obj_meta.bbox, 3, (0, 255, 0, 255))
                 obj_metas.append(obj_meta)
+                # self.visualize(obj_meta.bbox)
 
         if not primary_meta_object:
             return
@@ -97,3 +97,26 @@ class Overlay(NvDsDrawFunc):
             # )
 
             legend_y += legend_rect_width + 50
+
+    
+    def visualize(self, results):
+        image = cv2.imread("/test_data/test_img.jpeg")
+        input_w , input_h = 640, 640
+        img_h, img_w, _ = image.shape
+        r_w = input_w / img_w
+        r_h = input_h / img_h
+        r = min(r_w, r_h)
+
+        # for box in results:
+        xc = int(results.xc)
+        yc = int(results.yc)
+        w = int(results.width)
+        h = int(results.height)
+        x1 = int(xc - w / 2)
+        y1 = int(yc - h / 2)
+        # y1 = int(yc - h / 2 - (input_h - r * img_h) / 2)
+        x2 = int(xc + w / 2)
+        y2 = int(yc + h / 2)
+        # y2 = int(yc + h / 2 - (input_h - r * img_h) / 2)
+        image = cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+        cv2.imwrite("/opt/savant/src/test_img_result.jpg", image)

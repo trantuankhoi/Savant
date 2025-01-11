@@ -71,7 +71,8 @@ services:
       - ./downloads_cache:/downloads_cache
       - ../samples:/opt/savant/samples
       - ./:/opt/savant/viags_demo
-    command: viags_demo/module.yml
+      - ./src/module/:/opt/savant/viags_demo
+    command: /opt/savant/viags_demo/module.yml
     environment:
       - HEALTHCHECK_PORT=8888
       - MODEL_PATH=/cache
@@ -152,6 +153,8 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    networks:
+      - network
 
 volumes:
   zmq_sockets:
