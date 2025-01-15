@@ -1,0 +1,248 @@
+services:
+
+  video-loop-source-1:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_1.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video1
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-2:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_2.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video2
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-3:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_3.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video3
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-4:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_4.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video4
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-5:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_5.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video5
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-6:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_5.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video6
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-7:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_5.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video7
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-8:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_5.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video8
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-9:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ../assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_5.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video9
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-10:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ./assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_5.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video10
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-11:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ./assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_5.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video11
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+  video-loop-source-12:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - /tmp/video-loop-source-downloads:/tmp/video-loop-source-downloads
+      - ./assets/videos:/videos
+    environment:
+      - LOCATION=/videos/cam_1_sample_savant_1_part_5.mp4
+      - DOWNLOAD_PATH=/tmp/video-loop-source-downloads
+      - ZMQ_ENDPOINT=pub+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - SOURCE_ID=video12
+      - SYNC_OUTPUT=True
+    entrypoint: /opt/savant/adapters/gst/sources/video_loop.sh
+    depends_on:
+      module:
+        condition: service_healthy
+    networks:
+      - network
+
+volumes:
+  zmq_sockets:
+
+networks:
+  network:
+    attachable: true

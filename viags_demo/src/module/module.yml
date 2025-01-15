@@ -32,6 +32,7 @@ parameters:
     # Add paddings to the frame before processing
   output_frame:
     codec: raw-rgba
+    # encoder: nvenc
   # custom drawing on frames function
   draw_func:
     module: viags_demo.overlay
@@ -60,7 +61,7 @@ pipeline:
         format: onnx
         model_file: head.pt.onnx
         config_file: config_infer_primary_head_detection.txt
-        batch_size: 3
+        batch_size: 1
         workspace_size: 6144
 
         # configuration of input data and custom preprocessing methods
@@ -98,10 +99,10 @@ pipeline:
     #     display-tracking-id: 0
 
     # custom pyfunc element
-    - element: pyfunc
-      module: viags_demo.object_counting
-      class_name: ObjectCounting
-      kwargs:
-        config_path: /opt/savant/viags_demo/area_config.yml
-        target_obj_label: head
-        send_stats: False
+    # - element: pyfunc
+    #   module: viags_demo.object_counting
+    #   class_name: ObjectCounting
+    #   kwargs:
+    #     config_path: /opt/savant/viags_demo/area_config.yml
+    #     target_obj_label: head
+    #     send_stats: False

@@ -22,6 +22,7 @@ function set_source {
     source_adapter=$(./scripts/run_source.py multi-stream --detach \
       --number-of-streams="$MULTISTREAM" \
       --shutdown-auth=shutdown \
+      --sync \
       "$data_location")
     trap "docker kill $source_adapter >/dev/null 2>/dev/null" EXIT
     sleep 5
