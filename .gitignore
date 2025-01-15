@@ -68,3 +68,5 @@ logs
 .env
 
 samples/viags_demo
+
+*.zip
